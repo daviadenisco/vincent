@@ -2,7 +2,7 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-This app makes an axios call to https://theunitedstates.io/congress-legislators/legislators-current.json each time the page is reloaded. However, if building this for production, I would, instead, store the information and make one call per day to the url.
+This app makes an axios call to https://theunitedstates.io/congress-legislators/legislators-current.json each time the page is reloaded. If building this for production, I would perhaps store the information and make one call per day to the url.
 
 ### Setup
 
