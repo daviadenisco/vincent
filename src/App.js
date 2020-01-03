@@ -19,7 +19,6 @@ const sortOptions = [
 ]
 
 let filterOptions = [
-  { value: 'none', label: 'None' }, 
   { value: 'democrat', label: 'Democrat' }, 
   { value: 'independent', label: 'Independent' },
   { value: 'republican', label: 'Republican'}
