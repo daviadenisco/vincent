@@ -46,6 +46,7 @@ const useStyles = makeStyles({
     function handleImageError(ev) {
         // generic default profile pic
         // ev.target.src = '/default-profile-image.jpg';
+        
         // select random cat profile pic
         ev.target.src = picsOnError[getRandomInt()];
     }
@@ -59,6 +60,7 @@ const useStyles = makeStyles({
             <a 
                 // link to a congressperson's wikipedia page
                 // href={`https://en.wikipedia.org/wiki/${member.id.wikipedia.split(' ')[0]}_${member.id.wikipedia.split(' ')[1]}`} 
+
                 // link to a congressperson's website
                 href={currentTerm.url}
                 target="_blank" 

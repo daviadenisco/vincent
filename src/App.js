@@ -34,44 +34,64 @@ for (let key in stateList) {
     }
   );
 }
-
 function App() {
+  // for pagination
   const [offset, setOffset] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
+  // members list from url
   const [members, setMembers] = useState([]);
-  const [filteredMembers, setFilteredMembers] = useState([]);
+  // updated list of members based on search, sort, or filter
+  const [updatedMembers, setUpdatedMembers] = useState([]);
+  // the data we map over to render each congressperson's card
   const [currentData, setCurrentData] = useState([]);
+  // sort, filter, and search options/terms
   const [selectedSort, setSelectedSort] = useState();
   const [selectedFilter, setSelectedFilter] = useState();
+  const [searchTerm, setSearchTerm] = useState('');
   
   useEffect(() => {
     getMembers();
   }, []);
   
   useEffect(() => {
-    setCurrentData(filteredMembers.slice(offset, offset + pageLimit));
-  }, [offset, filteredMembers]);
-
-  useEffect(()=>{
-    const filteredMembers = members.filter(member => {
+    setCurrentData(updatedMembers.slice(offset, offset + pageLimit));
+  }, [offset, updatedMembers]);
+  
+  useEffect(() => {
+    let list = null;
+    if (searchTerm) {
+      list = updatedMembers;
+    } else {
+      list = members;
+    }
+    const filteredMembers = list.filter(member => {
       if(!selectedFilter) return true;
-
+      
       const termsLen = member.terms ? member.terms.length : 0;
       const state = termsLen && member.terms && member.terms[member.terms.length-1] && member.terms[member.terms.length-1].state;
-     
+      
       const party = member.terms[member.terms.length-1].party.toUpperCase();
       
       if(!termsLen) return false;
-
+      
       if ('all' === selectedFilter) {
         return 'all' === selectedFilter;
       }
       return state === selectedFilter || party === selectedFilter.toUpperCase();
     });
-    setFilteredMembers(filteredMembers);
-
-  },[selectedFilter, members])
-
+    setUpdatedMembers(filteredMembers);    
+  },[selectedFilter, members]);
+  
+  useEffect(() => {
+    const results = members.filter(member => {
+      if (searchTerm === '') return true;
+      const name = member.name.official_full.toUpperCase();
+      
+      return name.includes(searchTerm.toUpperCase());
+    })
+    setUpdatedMembers(results);
+  }, [searchTerm, members]);
+  
   // number of items to display on each page
   const pageLimit = 20;
   
@@ -87,6 +107,7 @@ function App() {
   };
 
   const handleSort = option => {
+    setSelectedFilter();
     setSelectedSort(option.value);
     sortResults(option.value);
   }
@@ -95,27 +116,26 @@ function App() {
     setSelectedFilter(option.value);
   }
 
-  // function manageSort(a, b) {
-  //   let sortResults = members.slice(0);
-  //   sortResults.sort(function(a, b) {
-  //     if (a < b) {
-  //       return -1;
-  //     };
-  //     if (a > b) {
-  //       return 1;
-  //     };
-  //     return 0;
-  //   })
-  // }
+  const handleSearch = e => {
+    setSelectedSort();
+    setSelectedFilter();
+    setSearchTerm(e.target.value);
+    if (e.target.value.length < 1) {
+      getMembers();
+    }
+  }
   
   function sortResults(option) {
+    let list = null;
+    if (searchTerm) {
+      list = updatedMembers;
+    } else {
+      list = members
+    }
     if (option === 'none') {
       getMembers();
     } else if (option === 'party') {
-      // let a = members.terms[members.terms.length-1].party.toUpperCase();
-      // let b = members.terms[members.terms.length-1].party.toUpperCase();
-      // let sortByParty = manageSort(a, b);
-      let sortByParty = members.slice(0);
+      let sortByParty = list.slice(0);
       sortByParty.sort(function(a, b) {
         a = a.terms[a.terms.length-1].party.toUpperCase();
         b = b.terms[b.terms.length-1].party.toUpperCase();
@@ -129,8 +149,9 @@ function App() {
       });
       setMembers(sortByParty);
 
+
     } else if (option === 'state') {
-      let sortByState = members.slice(0);
+      let sortByState = list.slice(0);
       sortByState.sort(function(a, b) {
         a = getStateNameByStateCode(a.terms[a.terms.length-1].state.toUpperCase()) || 'Z';
         b = getStateNameByStateCode(b.terms[b.terms.length-1].state.toUpperCase()) || 'Z';
@@ -143,10 +164,12 @@ function App() {
         }
         return 0;
       });
+      // setUpdatedMembers(sortByState)
       setMembers(sortByState)
+
     } else if (option === 'name') {
       // sort by first name
-      let sortByName = members.slice(0);
+      let sortByName = list.slice(0);
       sortByName.sort(function(a, b) {
         a = a.name.first.toUpperCase() || 'Z';
         b = b.name.first.toUpperCase() || 'Z';
@@ -171,15 +194,19 @@ function App() {
         }
         return 0;
       });
+      // setUpdatedMembers(sortByName);
       setMembers(sortByName);
+
     } else if (option === 'terms') {
-      let sortByTerms = members.slice(0);
+      let sortByTerms = list.slice(0);
       sortByTerms.sort(function(a, b) {
         a = a.terms.length;
         b = b.terms.length;
         return b - a;
       });
+      // setUpdatedMembers(sortByTerms);
       setMembers(sortByTerms);
+
     };
   };
     
@@ -189,7 +216,7 @@ function App() {
         United States Members of Congress
       </div>
       <div id='find'>
-        <Paginator
+          <Paginator
           totalRecords={members.length}
           pageLimit={pageLimit}
           setOffset={setOffset}
@@ -208,14 +235,17 @@ function App() {
             </Dropdown.Item>
           ))}
         </Dropdown>
-        <span className='find-label'>Filter: </span>
+        <span className='filter-label'>Filter: </span>
         <Dropdown 
           options={sortOptions}
           value={selectedSort}
           placeholder='Select option...'
           onChange={handleSort}
         />
-        <span className='find-label'>Sort: </span>
+        <span className='sort-label'>Sort: </span>
+
+        <input type='text' id='search' placeholder='Enter name...' value={searchTerm} onChange={handleSearch} />
+        <span className='search-label'>Search: </span>
       </div>
       <Grid container className="App" spacing={6}>
         <Grid item xs={12}>
@@ -228,13 +258,15 @@ function App() {
           </Grid>
         </Grid>
       </Grid>
-      <Paginator
-        totalRecords={members.length}
-        pageLimit={pageLimit}
-        setOffset={setOffset}
-        currentPage={currentPage}
-        setCurrentPage={setCurrentPage}
-      />
+      <div id='bottom-paginator'>
+        <Paginator
+          totalRecords={members.length}
+          pageLimit={pageLimit}
+          setOffset={setOffset}
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+        />
+      </div>
     </div>
   );
 }

@@ -27,9 +27,31 @@
   padding: 15px !important;
 }
 
-.find-label {
+.filter-label {
   float: right;
   padding: 8px 20px 8px 10px;
+}
+
+.sort-label {
+  float: right;
+  padding: 8px 20px 8px 30px;
+}
+
+.search-label {
+  float: right;
+  padding: 8px 20px 8px 30px;
+}
+
+#search {
+  float: right;
+  padding: 8px 10px 6px 10px;
+  font-size: 16px;
+  outline-width: 0;
+}
+
+::placeholder {
+  color: #333333;
+  font-size: 16px;
 }
 
 .headshot:hover {
@@ -37,4 +59,19 @@
   cursor: pointer;
   transform: scaleX(-1);
   margin: 0;
+}
+
+.react-hooks-paginator {
+  justify-content: flex-end !important;
+  float: right;
+  margin: 0 24px 0 -30px;
+}
+
+.page-link {
+  padding: 10px 12px 10px 12px !important;
+}
+
+#bottom-paginator {
+  padding: 30px 0 0 0;
+  margin-right: 44%;
 }
