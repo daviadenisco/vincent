@@ -5,6 +5,7 @@ import Paginator from 'react-hooks-paginator';
 import axios from 'axios';
 import Member from './Member';
 import stateList from './states';
+import {getStateNameByStateCode} from './helpers';
 import './App.css';
 import 'react-dropdown/style.css'
 
@@ -16,9 +17,10 @@ const sortOptions = [
   { value: 'state', label: 'State' },
   { value: 'name', label: 'Name' },
   { value: 'terms', label: 'Terms' }
-]
+];
 
 let filterOptions = [
+  { value: 'all', label: 'All'},
   { value: 'democrat', label: 'Democrat' }, 
   { value: 'independent', label: 'Independent' },
   { value: 'republican', label: 'Republican'}
@@ -61,12 +63,16 @@ function App() {
       
       if(!termsLen) return false;
 
+      if ('all' === selectedFilter) {
+        return 'all' === selectedFilter;
+      }
       return state === selectedFilter || party === selectedFilter.toUpperCase();
     });
     setFilteredMembers(filteredMembers);
 
   },[selectedFilter, members])
 
+  // number of items to display on each page
   const pageLimit = 20;
   
   const getMembers = () => {
@@ -89,48 +95,50 @@ function App() {
     setSelectedFilter(option.value);
   }
 
-  let getStateNameByStateCode = function(code) {
-    for (let key in stateList) {
-      if (code === key) {
-          return stateList[key]
-      }
-    }
-  };
-
+  // function manageSort(a, b) {
+  //   let sortResults = members.slice(0);
+  //   sortResults.sort(function(a, b) {
+  //     if (a < b) {
+  //       return -1;
+  //     };
+  //     if (a > b) {
+  //       return 1;
+  //     };
+  //     return 0;
+  //   })
+  // }
+  
   function sortResults(option) {
     if (option === 'none') {
       getMembers();
     } else if (option === 'party') {
-
+      // let a = members.terms[members.terms.length-1].party.toUpperCase();
+      // let b = members.terms[members.terms.length-1].party.toUpperCase();
+      // let sortByParty = manageSort(a, b);
       let sortByParty = members.slice(0);
       sortByParty.sort(function(a, b) {
-        a = a.terms[a.terms.length-1].party;
-        b = b.terms[b.terms.length-1].party;
-      
-        let partyA = a.toUpperCase();
-        let partyB = b.toUpperCase();
-        if(partyA < partyB) {
+        a = a.terms[a.terms.length-1].party.toUpperCase();
+        b = b.terms[b.terms.length-1].party.toUpperCase();
+        if (a < b) {
           return -1;
-        }
-        if(partyA > partyB) {
+        } 
+        if (a > b) {
           return 1;
         }
         return 0;
       });
       setMembers(sortByParty);
-    } else if (option === 'state') {
 
+    } else if (option === 'state') {
       let sortByState = members.slice(0);
       sortByState.sort(function(a, b) {
-        a = getStateNameByStateCode(a.terms[a.terms.length-1].state) || 'Z';
-        b = getStateNameByStateCode(b.terms[b.terms.length-1].state) || 'Z';
+        a = getStateNameByStateCode(a.terms[a.terms.length-1].state.toUpperCase()) || 'Z';
+        b = getStateNameByStateCode(b.terms[b.terms.length-1].state.toUpperCase()) || 'Z';
 
-        let stateA = a.toUpperCase();
-        let stateB = b.toUpperCase();
-        if (stateA < stateB) {
+        if (a < b) {
           return -1;
         }
-        if (stateA > stateB) {
+        if (a > b) {
           return 1;
         }
         return 0;
@@ -140,36 +148,31 @@ function App() {
       // sort by first name
       let sortByName = members.slice(0);
       sortByName.sort(function(a, b) {
-        a = a.name.first || 'Z';
-        b = b.name.first || 'Z';
+        a = a.name.first.toUpperCase() || 'Z';
+        b = b.name.first.toUpperCase() || 'Z';
 
-        let nameA = a.toUpperCase();
-        let nameB = b.toUpperCase();
-        if (nameA < nameB) {
+        if (a < b) {
           return -1;
         }
-        if (nameA > nameB) {
+        if (a > b) {
           return 1;
         }
         return 0;
       });
       // sort by last name
       sortByName.sort(function(a, b) {
-        a = a.name.last || 'Z';
-        b = b.name.last || 'Z';
-        let nameA = a.toUpperCase();
-        let nameB = b.toUpperCase();
-        if (nameA < nameB) {
+        a = a.name.last.toUpperCase() || 'Z';
+        b = b.name.last.toUpperCase() || 'Z';
+        if (a < b) {
           return -1;
         }
-        if (nameA > nameB) {
+        if (a > b) {
           return 1;
         }
         return 0;
       });
       setMembers(sortByName);
     } else if (option === 'terms') {
-     
       let sortByTerms = members.slice(0);
       sortByTerms.sort(function(a, b) {
         a = a.terms.length;
@@ -186,16 +189,17 @@ function App() {
         United States Members of Congress
       </div>
       <div id='find'>
-        <Dropdown 
-          options={sortOptions}
-          value={selectedSort}
-          placeholder='Sort'
-          onChange={handleSort}
+        <Paginator
+          totalRecords={members.length}
+          pageLimit={pageLimit}
+          setOffset={setOffset}
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
         />
         <Dropdown
           options={filterOptions}
           value={selectedFilter}
-          placeholder='Filter'
+          placeholder='Select option...'
           onChange={handleFilter}
         >    
           {filterOptions.map((item, index) => (
@@ -204,6 +208,14 @@ function App() {
             </Dropdown.Item>
           ))}
         </Dropdown>
+        <span className='find-label'>Filter: </span>
+        <Dropdown 
+          options={sortOptions}
+          value={selectedSort}
+          placeholder='Select option...'
+          onChange={handleSort}
+        />
+        <span className='find-label'>Sort: </span>
       </div>
       <Grid container className="App" spacing={6}>
         <Grid item xs={12}>
@@ -219,7 +231,6 @@ function App() {
       <Paginator
         totalRecords={members.length}
         pageLimit={pageLimit}
-        pageNeighbours={1}
         setOffset={setOffset}
         currentPage={currentPage}
         setCurrentPage={setCurrentPage}
