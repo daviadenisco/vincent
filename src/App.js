@@ -59,7 +59,7 @@ function App() {
   
   useEffect(() => {
     let list = null;
-    if (searchTerm) {
+    if (searchTerm || selectedSort) {
       list = updatedMembers;
     } else {
       list = members;
@@ -86,7 +86,7 @@ function App() {
     const results = members.filter(member => {
       if (searchTerm === '') return true;
       const name = member.name.official_full.toUpperCase();
-      
+
       return name.includes(searchTerm.toUpperCase());
     })
     setUpdatedMembers(results);
@@ -106,14 +106,27 @@ function App() {
       });
   };
 
-  const handleSort = option => {
+  function resetSearchSortFilter() {
+    setSearchTerm('');
     setSelectedFilter();
+    setSelectedSort();
+  }
+
+  function resetFilter() {
+    setSelectedFilter('all');
+  }
+
+  const handleSort = option => {
     setSelectedSort(option.value);
     sortResults(option.value);
   }
 
   const handleFilter = option => {
-    setSelectedFilter(option.value);
+    if (searchTerm && selectedFilter && selectedSort) {
+      resetFilter();
+    }
+
+    setTimeout(() => setSelectedFilter(option.value), 500);
   }
 
   const handleSearch = e => {
@@ -127,7 +140,7 @@ function App() {
   
   function sortResults(option) {
     let list = null;
-    if (searchTerm) {
+    if (searchTerm || selectedFilter) {
       list = updatedMembers;
     } else {
       list = members
@@ -147,7 +160,8 @@ function App() {
         }
         return 0;
       });
-      setMembers(sortByParty);
+      // setMembers(sortByParty);
+      setUpdatedMembers(sortByParty)
 
 
     } else if (option === 'state') {
@@ -164,8 +178,8 @@ function App() {
         }
         return 0;
       });
-      // setUpdatedMembers(sortByState)
-      setMembers(sortByState)
+      setUpdatedMembers(sortByState)
+      // setMembers(sortByState)
 
     } else if (option === 'name') {
       // sort by first name
@@ -194,8 +208,8 @@ function App() {
         }
         return 0;
       });
-      // setUpdatedMembers(sortByName);
-      setMembers(sortByName);
+      setUpdatedMembers(sortByName);
+      // setMembers(sortByName);
 
     } else if (option === 'terms') {
       let sortByTerms = list.slice(0);
@@ -204,71 +218,96 @@ function App() {
         b = b.terms.length;
         return b - a;
       });
-      // setUpdatedMembers(sortByTerms);
-      setMembers(sortByTerms);
+      setUpdatedMembers(sortByTerms);
+      // setMembers(sortByTerms);
 
     };
   };
-    
   return (
     <div id='container'>
-      <div id='header'>
-        United States Members of Congress
-      </div>
-      <div id='find'>
-          <Paginator
-          totalRecords={members.length}
+      <div id='sticky'>
+        <div id='header' className='shadow'>
+          <span id='blue'>
+            United States Members of 
+          </span>
+          <span id='red'> Congress</span>
+        </div>
+        {/* <div className='paginator-div'>
+        <Paginator
+          totalRecords={updatedMembers.length}
           pageLimit={pageLimit}
           setOffset={setOffset}
           currentPage={currentPage}
           setCurrentPage={setCurrentPage}
         />
-        <Dropdown
-          options={filterOptions}
-          value={selectedFilter}
-          placeholder='Select option...'
-          onChange={handleFilter}
-        >    
-          {filterOptions.map((item, index) => (
-            <Dropdown.Item index={index}>
-              {item}
-            </Dropdown.Item>
-          ))}
-        </Dropdown>
-        <span className='filter-label'>Filter: </span>
-        <Dropdown 
-          options={sortOptions}
-          value={selectedSort}
-          placeholder='Select option...'
-          onChange={handleSort}
-        />
-        <span className='sort-label'>Sort: </span>
+        </div> */}
+        <div id='subheader'>
+          <div id='search-div'>
 
-        <input type='text' id='search' placeholder='Enter name...' value={searchTerm} onChange={handleSearch} />
-        <span className='search-label'>Search: </span>
-      </div>
-      <Grid container className="App" spacing={6}>
-        <Grid item xs={12}>
-          <Grid container justify="center" spacing={6}>
-            {currentData.map((member, index) => (
-              <Grid key={index} item>
-                <Member key={member.id} index={index} member={member} />
-              </Grid>
+           <input type='text' id='search' placeholder='Enter name...' value={searchTerm} onChange={handleSearch} />
+          <span className='search-label'>Search: </span>
+          </div>
+        <div id='find'>
+          <Dropdown
+            options={filterOptions}
+            value={selectedFilter}
+            placeholder='Select option...'
+            onChange={handleFilter}
+          >    
+            {filterOptions.map((item, index) => (
+              <Dropdown.Item index={index}>
+                {item}
+              </Dropdown.Item>
             ))}
-          </Grid>
+          </Dropdown>
+          <span className='filter-label'>Filter: </span>
+          <Dropdown 
+            options={sortOptions}
+            value={selectedSort}
+            placeholder='Select option...'
+            onChange={handleSort}
+          />
+          <span className='sort-label'>Sort: </span>
+        </div>
+        </div>
+      </div>
+      
+      
+{updatedMembers.length ? 
+  <div>
+    <Grid container className="App" spacing={6}>
+      <Grid item xs={12}>
+        <Grid container justify="center" spacing={6}>
+          {currentData.map((member, index) => (
+            <Grid key={index} item>
+              <Member key={member.id} index={index} member={member} />
+            </Grid>
+          ))}
         </Grid>
       </Grid>
-      <div id='bottom-paginator'>
-        <Paginator
-          totalRecords={members.length}
-          pageLimit={pageLimit}
-          setOffset={setOffset}
-          currentPage={currentPage}
-          setCurrentPage={setCurrentPage}
-        />
-      </div>
+    </Grid>
+    <div id='bottom-paginator'>
+      <Paginator
+        totalRecords={updatedMembers.length}
+        pageLimit={pageLimit}
+        setOffset={setOffset}
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
+      />
     </div>
-  );
+  </div> 
+  : 
+  <div>
+    <Grid container className="App" spacing={6}>
+      <Grid item xs={12}>
+        <div id='no-results'>
+          Nothing found, please reset the search filters.
+        </div>
+        <button id='reset' onClick={resetSearchSortFilter}>Reset</button>
+      </Grid>
+    </Grid>
+  </div>}
+</div>);
 }
 
 export default App;

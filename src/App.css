@@ -1,26 +1,63 @@
 .App {
   text-align: center;
-}
-
-#container {
-  text-align: center;
+  padding: 20px 0 0 0;
 }
 
 #header {
-  font-size: 60px;
+  font-size: 40px;
   font-weight: bold;
-  padding: 40px;
+  /* padding: 20px 0 20px 170px; */
+  padding: 30px 0 26px 80px;
+  font-family: 'Cinzel', serif;
+}
+
+#header.shadow {
+  -webkit-box-shadow: 0 3px 0 rgba(174, 181, 189, 0.3);
+  -moz-box-shadow: 0 3px 0 rgba(174, 181, 189, 0.3);
+  box-shadow: 0 3px 0 rgba(174, 181, 189, 0.3);
+  width: 100%;
+}
+
+#subheader {
+  margin: 62px 0 0 0;
+}
+
+.page-item.active .page-link {
+  background-color: rgb(105, 144, 167) !important;
+  border-color: rgb(105, 144, 167) !important;
 }
 
 #find {
   display: block;
   margin: 20px 145px 0 0;
+  background-color: #fff;
+  padding: 0 0 30px 0;
 }
 
 .Dropdown-root {
   float: right;
   margin-right: 24px;
   width: 10%;
+}
+
+#blue {
+  color: darkblue;
+}
+
+#red {
+  color: crimson;
+}
+
+#sticky {
+  position: sticky;
+  top: 0;
+  background-color: #fff;
+  padding: 0 0 20px 0;
+}
+
+.paginator-div {
+  height: 50px;
+  margin: 40px 0 0 0;
 }
 
 .MuiCardContent-root {
@@ -49,6 +86,11 @@
   outline-width: 0;
 }
 
+#search-div {
+  float: left;
+  padding: 0 0 0 140px;
+}
+
 ::placeholder {
   color: #333333;
   font-size: 16px;
@@ -59,12 +101,22 @@
   cursor: pointer;
   transform: scaleX(-1);
   margin: 0;
+  z-index: 0;
+}
+
+#no-results {
+  font-size: 30px;
+  margin: 0 0 40px 0;
+}
+
+#reset {
+  font-size: 20px;
 }
 
 .react-hooks-paginator {
-  justify-content: flex-end !important;
-  float: right;
-  margin: 0 24px 0 -30px;
+  /* margin: 24px 24px 0 24px; */
+  padding: 0 !important;
+  margin: 0 !important;
 }
 
 .page-link {
@@ -73,5 +125,4 @@
 
 #bottom-paginator {
   padding: 30px 0 0 0;
-  margin-right: 44%;
 }
