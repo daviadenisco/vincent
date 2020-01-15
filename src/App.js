@@ -147,6 +147,7 @@ function App() {
     }
     if (option === 'none') {
       getMembers();
+      setSelectedFilter();
     } else if (option === 'party') {
       let sortByParty = list.slice(0);
       sortByParty.sort(function(a, b) {
