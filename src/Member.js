@@ -21,10 +21,8 @@ const useStyles = makeStyles({
     },
   });
 
-  
   function Member({member}) {
     const classes = useStyles();
-
     // gets member's 
     // full name
     let name = member.name.official_full;

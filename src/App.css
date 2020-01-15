@@ -1,43 +1,13 @@
 .App {
-  text-align: center;
   padding: 20px 0 0 0;
+  text-align: center;
 }
 
 #header {
+  font-family: 'Cinzel', serif;
   font-size: 40px;
   font-weight: bold;
-  /* padding: 20px 0 20px 170px; */
   padding: 30px 0 26px 80px;
-  font-family: 'Cinzel', serif;
-}
-
-#header.shadow {
-  -webkit-box-shadow: 0 3px 0 rgba(174, 181, 189, 0.3);
-  -moz-box-shadow: 0 3px 0 rgba(174, 181, 189, 0.3);
-  box-shadow: 0 3px 0 rgba(174, 181, 189, 0.3);
-  width: 100%;
-}
-
-#subheader {
-  margin: 62px 0 0 0;
-}
-
-.page-item.active .page-link {
-  background-color: rgb(105, 144, 167) !important;
-  border-color: rgb(105, 144, 167) !important;
-}
-
-#find {
-  display: block;
-  margin: 20px 145px 0 0;
-  background-color: #fff;
-  padding: 0 0 30px 0;
-}
-
-.Dropdown-root {
-  float: right;
-  margin-right: 24px;
-  width: 10%;
 }
 
 #blue {
@@ -48,21 +18,27 @@
   color: crimson;
 }
 
-#sticky {
-  position: sticky;
-  top: 0;
-  background-color: #fff;
-  padding: 0 0 20px 0;
-  z-index: 1;
+#header.shadow {
+  box-shadow: 0 3px 0 rgba(174, 181, 189, 0.3);
+  -moz-box-shadow: 0 3px 0 rgba(174, 181, 189, 0.3);
+  -webkit-box-shadow: 0 3px 0 rgba(174, 181, 189, 0.3);
+  width: 100%;
+}
+
+#subheader {
+  margin: 62px 0 0 0;
 }
 
 .paginator-div {
-  height: 50px;
+  height: 10px;
   margin: 40px 0 0 0;
 }
 
-.MuiCardContent-root {
-  padding: 15px !important;
+#find {
+  background-color: #fff;
+  display: block;
+  margin: 20px 145px 0 0;
+  padding: 0 0 30px 0;
 }
 
 .filter-label {
@@ -82,9 +58,9 @@
 
 #search {
   float: right;
-  padding: 8px 10px 6px 10px;
   font-size: 16px;
   outline-width: 0;
+  padding: 8px 10px 6px 10px;
 }
 
 #search-div {
@@ -92,16 +68,34 @@
   padding: 0 0 0 140px;
 }
 
+.Dropdown-root {
+  float: right;
+  margin-right: 24px;
+  width: 10%;
+}
+
+#sticky {
+  background-color: #fff;
+  padding: 0 0 20px 0;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
 ::placeholder {
-  color: #333333;
   font-size: 16px;
+  color: #333333;
+}
+
+.MuiCardContent-root {
+  padding: 15px !important;
 }
 
 .headshot:hover {
-  -webkit-transform: scaleX(-1);
   cursor: pointer;
-  transform: scaleX(-1);
   margin: 0;
+  transform: scaleX(-1);
+  -webkit-transform: scaleX(-1);
   z-index: 0;
 }
 
@@ -114,16 +108,15 @@
   font-size: 20px;
 }
 
-.react-hooks-paginator {
-  /* margin: 24px 24px 0 24px; */
-  padding: 0 !important;
-  margin: 0 !important;
-}
-
 .page-link {
   padding: 10px 12px 10px 12px !important;
 }
 
 #bottom-paginator {
   padding: 30px 0 0 0;
+}
+
+.page-item.active .page-link {
+  background-color: rgb(105, 144, 167) !important;
+  border-color: rgb(105, 144, 167) !important;
 }
